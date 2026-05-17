@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manage Staff – Staff Rota</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<body class="admin-page">
+<header class="header">
+  <div class="logo">
+    <span><i class="fa fa-calendar-check" style="font-size:13px;color:white;"></i></span>
+    Staff Rota
+  </div>
+  <nav class="nav">
+    <a href="/">Dashboard</a>
+    <a href="/rota">Scheduler</a>
+    <a href="/admin/" class="active">Manage Staff</a>
+  </nav>
+</header>
+
+<div class="main">
+  <div class="page-title"><i class="fa fa-users-gear"></i> Manage Staff</div>
+
+  <!-- Add Staff -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Add New Staff Member</span>
+    </div>
+    <div class="add-form">
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" class="form-control" id="new-name" placeholder="Jane Smith"/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" class="form-control" id="new-email" placeholder="jane@clinic.com"/>
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <input type="text" class="form-control" id="new-role" placeholder="Dentist"/>
+      </div>
+      <div class="form-group">
+        <label>Hourly Pay (£)</label>
+        <input type="number" class="form-control" id="new-hourly-pay" placeholder="0.00" min="0" step="0.01"/>
+      </div>
+      <div class="form-group">
+        <label>Colour</label>
+        <div class="color-row">
+          <input type="color" id="new-color" value="#6366f1"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>&nbsp;</label>
+        <button class="btn btn-primary" id="btn-add-staff">
+          <i class="fa fa-plus"></i> Add
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Staff Table -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">All Staff (<span id="staff-count">0</span>)</span>
+    </div>
+    <table class="staff-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Hourly Pay</th>
+          <th style="width:80px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="staff-tbody">
+        <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px;"><i class="fa fa-spinner fa-spin"></i> Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-backdrop" id="edit-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Edit Staff Member</span>
+      <button class="modal-close" id="edit-modal-close"><i class="fa fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-id"/>
+      <div class="form-group">
+        <label class="form-control" style="padding:0;border:none;background:none;">Full Name *</label>
+        <input type="text" class="form-control" id="edit-name"/>
+      </div>
+      <div class="form-group">
+        <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:block;">Email</label>
+        <input type="email" class="form-control" id="edit-email"/>
+      </div>
+      <div class="form-group">
+        <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:block;">Role</label>
+        <input type="text" class="form-control" id="edit-role"/>
+      </div>
+      <div class="form-group">
+        <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:block;">Colour</label>
+        <input type="color" id="edit-color" style="width:50px;height:36px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);cursor:pointer;padding:2px;"/>
+      </div>
+      <div class="form-group">
+        <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:block;">Hourly Pay (£)</label>
+        <input type="number" class="form-control" id="edit-hourly-pay" min="0" step="0.01"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="edit-cancel">Cancel</button>
+      <button class="btn btn-primary" id="edit-save"><i class="fa fa-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="../static/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,888 @@
+/* ==========================================================================
+   Staff Rota – Centralised Stylesheet
+   Consolidated from:
+     - templates/user/rota.html      (was already linked here)
+     - templates/user/index.html     (was embedded <style>)
+     - templates/admin/employee-add.html (was embedded <style>)
+   ========================================================================== */
+
+
+/* ── Reset & Variables (shared across all pages) ──────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0f1117;
+  --surface:   #1a1d27;
+  --surface2:  #22263a;
+  --border:    #2e3350;
+  --text:      #e8eaf0;
+  --muted:     #8b92b3;
+  --accent:    #6366f1;
+  --accent-lt: #818cf8;
+  --success:   #10b981;
+  --danger:    #ef4444;
+  --warn:      #f59e0b;
+  --radius:    10px;
+  /* rota.html extras */
+  --sidebar-w: 280px;
+  --header-h:  60px;
+}
+
+
+/* ── Shared body base ─────────────────────────────────────────────────────── */
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+
+/* ==========================================================================
+   ROTA PAGE  (templates/user/rota.html)
+   ========================================================================== */
+
+/* Rota page needs full-height locked layout */
+body.rota-page {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+html:has(body.rota-page) {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Top Header (rota page) ─────────────────────────────────────────────── */
+.rota-header {
+  height: var(--header-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 16px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.rota-header .logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.3px;
+}
+.rota-header .logo span {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+
+.header-nav {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+.header-nav a {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  transition: background .15s, color .15s;
+}
+.header-nav a:hover, .header-nav a.active {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+/* ── Shared Button styles ──────────────────────────────────────────────────
+   NOTE: .btn-danger differs between pages:
+     - rota.html: solid red background (default)
+     - employee-add.html: outline/ghost red variant (overridden via body.admin-page)
+   ───────────────────────────────────────────────────────────────────────── */
+.btn {
+  padding: 7px 16px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-primary {
+  background: var(--accent);
+  color: white;
+}
+.btn-primary:hover { background: var(--accent-lt); }
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--surface2); color: var(--text); }
+
+/* Default .btn-danger: solid red (rota.html behaviour) */
+.btn-danger { background: var(--danger); color: white; }
+.btn-danger:hover { background: #dc2626; }
+
+/* employee-add.html uses outline/ghost danger style */
+body.admin-page .btn-danger {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+body.admin-page .btn-danger:hover {
+  background: var(--danger);
+  color: white;
+}
+
+.btn-sm { padding: 5px 11px; font-size: 12px; }
+
+/* ── Layout (rota page) ──────────────────────────────────────────────────── */
+.rota-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Calendar Area ───────────────────────────────────────────────────────── */
+.calendar-area {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 12px;
+}
+
+.calendar-wrap {
+  flex: 1;
+  overflow: hidden;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 16px;
+}
+
+/* FullCalendar overrides */
+.fc {
+  height: 100%;
+  font-family: 'DM Sans', sans-serif;
+}
+.fc-theme-standard td, .fc-theme-standard th { border-color: var(--border); }
+.fc-theme-standard .fc-scrollgrid { border-color: var(--border); }
+.fc-col-header-cell { background: var(--surface2); }
+.fc-col-header-cell-cushion {
+  color: var(--muted) !important;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  text-decoration: none !important;
+}
+.fc-daygrid-day-number {
+  color: var(--muted) !important;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none !important;
+}
+.fc-daygrid-day.fc-day-today { background: rgba(99,102,241,.08) !important; }
+.fc-daygrid-day.fc-day-today .fc-daygrid-day-number { color: var(--accent-lt) !important; }
+.fc-button-primary {
+  background: var(--surface2) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+}
+.fc-button-primary:hover {
+  background: var(--border) !important;
+}
+.fc-button-primary.fc-button-active {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.fc-toolbar-title {
+  color: var(--text) !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+.fc-daygrid-day-frame { min-height: 90px; }
+.fc-daygrid-body-natural .fc-daygrid-day-events { padding-bottom: 4px; }
+.fc-scrollgrid-sync-inner { background: var(--surface); }
+.fc-timegrid-slot { height: 2.5em !important; }
+.fc-timegrid-axis { color: var(--muted); font-size: 11px; }
+.fc-list-event:hover td { background: var(--surface2) !important; }
+.fc-list-day-cushion { background: var(--surface2) !important; color: var(--muted) !important; }
+.fc-list-event-title a { color: var(--text) !important; text-decoration: none; }
+
+/* Shift event pills */
+.fc-event {
+  border: none !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+}
+.fc-event-title { font-size: 11px !important; font-weight: 600 !important; }
+.fc-event-time { font-size: 10px !important; opacity: .85; }
+
+/* Drop hover highlight */
+.fc-daygrid-day.drop-target-active {
+  background: rgba(99,102,241,.18) !important;
+  outline: 2px dashed var(--accent);
+  outline-offset: -2px;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+.staff-sidebar {
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sidebar-header h3 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+}
+
+.sidebar-search {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-search input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 7px 10px 7px 32px;
+  color: var(--text);
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+}
+.sidebar-search input::placeholder { color: var(--muted); }
+.sidebar-search input:focus { border-color: var(--accent); }
+.search-icon-wrap { position: relative; }
+.search-icon-wrap i {
+  position: absolute;
+  left: 10px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.staff-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.staff-list::-webkit-scrollbar { width: 4px; }
+.staff-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* Draggable staff card */
+.staff-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: grab;
+  transition: border-color .15s, transform .1s, box-shadow .15s;
+  user-select: none;
+}
+.staff-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(99,102,241,.15);
+}
+.staff-card:active { cursor: grabbing; transform: scale(.97); }
+.staff-card.dragging {
+  opacity: .4;
+}
+
+.staff-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+.staff-info { flex: 1; min-width: 0; }
+.staff-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.staff-role {
+  font-size: 11px;
+  color: var(--muted);
+}
+.drag-handle {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Legend / Stats Bar ──────────────────────────────────────────────────── */
+.stats-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.stat-pill {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.stat-pill .dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+}
+
+/* ── Ghost Drag Image ────────────────────────────────────────────────────── */
+#drag-ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  background: var(--accent);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  opacity: 0;
+  transition: opacity .1s;
+  white-space: nowrap;
+}
+
+/* ── Modal ───────────────────────────────────────────────────────────────── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+}
+.modal-backdrop.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  width: 440px;
+  max-width: 95vw;
+  box-shadow: 0 24px 64px rgba(0,0,0,.5);
+  overflow: hidden;
+  transform: translateY(10px) scale(.98);
+  transition: transform .2s;
+}
+/* employee-add.html modal: narrower, no scale on closed state */
+body.admin-page .modal {
+  width: 420px;
+  transform: translateY(10px);
+}
+.modal-backdrop.open .modal {
+  transform: translateY(0) scale(1);
+}
+.modal-header {
+  padding: 18px 20px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+body.admin-page .modal-header {
+  padding: 16px 20px;
+}
+.modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.modal-title i { color: var(--accent); }
+.modal-close {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  transition: all .15s;
+}
+.modal-close:hover { background: var(--surface2); color: var(--text); }
+.modal-body { padding: 20px; }
+body.admin-page .modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.modal-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* Form fields */
+.form-group { margin-bottom: 14px; }
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 6px;
+}
+.form-control {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 9px 12px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color .15s;
+}
+/* admin page uses slightly less padding */
+body.admin-page .form-control {
+  padding: 8px 11px;
+}
+.form-control:focus { border-color: var(--accent); }
+.form-control option { background: var(--surface); }
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ── Hours Summary Panel (inside shift modal) ────────────────────────────── */
+.hours-summary {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  font-size: 12px;
+}
+.hours-summary .hours-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hours-summary .hours-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.hours-summary .hours-value {
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  font-size: 13px;
+}
+.hours-summary .hours-value.paid { color: var(--success); }
+.hours-summary .hours-sep {
+  color: var(--border);
+  font-size: 18px;
+  align-self: center;
+}
+
+.drop-date-display {
+  background: var(--surface2);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-lt);
+}
+
+/* ── Toast ───────────────────────────────────────────────────────────────── */
+#toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.3);
+  animation: toastIn .25s ease forwards;
+  min-width: 220px;
+}
+.toast.success i { color: var(--success); }
+.toast.error i { color: var(--danger); }
+.toast.info i { color: var(--accent); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(20px); }
+}
+
+/* ── Loading ─────────────────────────────────────────────────────────────── */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15,17,23,.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  z-index: 5;
+}
+.spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Scrollbar for calendar */
+.fc-scroller::-webkit-scrollbar { width: 4px; }
+.fc-scroller::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* Empty state */
+.empty-staff {
+  text-align: center;
+  padding: 24px 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.empty-staff i { font-size: 28px; margin-bottom: 8px; display: block; }
+
+
+/* ==========================================================================
+   INDEX / DASHBOARD PAGE  (templates/user/index.html)
+   ========================================================================== */
+
+body.index-page {
+  min-height: 100vh;
+  /* index.html originally set --radius: 12px in its own :root */
+  --radius: 12px;
+}
+
+/* ── Header (index & admin pages share .header class) ────────────────────── */
+.header {
+  height: 60px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+}
+body.admin-page .header {
+  padding: 0 20px;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo span {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.nav {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+.nav a {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  transition: all .15s;
+}
+.nav a:hover, .nav a.active {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+/* ── Main content area ───────────────────────────────────────────────────── */
+.main {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+body.admin-page .main {
+  max-width: 900px;
+  margin: 32px auto;
+  padding: 0 16px;
+}
+
+/* ── Hero ─────────────────────────────────────────────────────────────────── */
+.hero { margin-bottom: 40px; }
+.hero h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+.hero p { font-size: 15px; color: var(--muted); }
+
+/* ── Stats grid (index page) ─────────────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.stat-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+.stat-value { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+.stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+/* ── Quick links (index page) ────────────────────────────────────────────── */
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+.quick-link {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color .2s, transform .15s;
+  display: block;
+}
+.quick-link:hover { border-color: var(--accent); transform: translateY(-2px); }
+.quick-link h3 {
+  font-size: 16px; font-weight: 700; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 8px;
+}
+.quick-link p { font-size: 13px; color: var(--muted); }
+.quick-link .link-icon { color: var(--accent); }
+
+/* ── Today's shifts panel (index page) ───────────────────────────────────── */
+.today-shifts {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-top: 24px;
+  overflow: hidden;
+}
+.section-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+}
+.shift-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.shift-row:last-child { border-bottom: none; }
+.shift-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: white;
+  flex-shrink: 0;
+}
+.shift-info { flex: 1; }
+.shift-name { font-size: 13px; font-weight: 600; }
+.shift-time { font-size: 12px; color: var(--muted); }
+.empty-msg { padding: 32px; text-align: center; color: var(--muted); font-size: 13px; }
+
+
+/* ==========================================================================
+   ADMIN PAGE  (templates/admin/employee-add.html)
+   ========================================================================== */
+
+body.admin-page {
+  min-height: 100vh;
+}
+
+/* ── Page title ──────────────────────────────────────────────────────────── */
+.page-title {
+  font-size: 22px; font-weight: 700;
+  margin-bottom: 24px;
+  display: flex; align-items: center; gap: 10px;
+}
+.page-title i { color: var(--accent); }
+
+/* ── Card ────────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-title { font-size: 14px; font-weight: 700; }
+
+/* ── Staff table ─────────────────────────────────────────────────────────── */
+.staff-table { width: 100%; border-collapse: collapse; }
+.staff-table th {
+  background: var(--surface2);
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .6px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.staff-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.staff-table tr:last-child td { border-bottom: none; }
+.staff-table tr:hover td { background: rgba(255,255,255,.02); }
+
+/* ── Avatar / name cell ──────────────────────────────────────────────────── */
+.avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: white;
+  flex-shrink: 0;
+}
+.name-cell { display: flex; align-items: center; gap: 10px; }
+
+/* ── Badge ───────────────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+}
+
+/* ── Add form ─────────────────────────────────────────────────────────────── */
+.add-form {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 2fr 2fr 1.5fr 1fr auto;
+  gap: 10px;
+  align-items: end;
+}
+.add-form .form-group label {
+  display: block;
+  font-size: 11px; font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase; letter-spacing: .5px;
+  margin-bottom: 5px;
+}
+.color-row { display: flex; align-items: center; gap: 8px; }
+.color-row input[type=color] {
+  width: 38px; height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface2);
+  cursor: pointer;
+  padding: 2px;
+}

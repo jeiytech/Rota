@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staff Rota – Scheduler</title>
+
+  <!-- FullCalendar -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet"/>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body class="rota-page">
+
+<!-- ── Header ─────────────────────────────────────────────────────────── -->
+<header class="rota-header">
+  <div class="logo">
+    <span><i class="fa fa-calendar-check" style="font-size:13px;color:white;"></i></span>
+    Staff Rota
+  </div>
+  <nav class="header-nav">
+    <a href="/" >Dashboard</a>
+    <a href="/rota" class="active">Scheduler</a>
+    <a href="/admin/">Manage Staff</a>
+  </nav>
+  <button class="btn btn-ghost btn-sm" id="btn-export-excel" title="Export to Excel" style="margin-left:0;">
+    <i class="fa fa-file-excel"></i> Export
+  </button>
+  <button class="btn btn-primary btn-sm" id="btn-add-shift" style="margin-left:8px;">
+    <i class="fa fa-plus"></i> Add Shift
+  </button>
+</header>
+
+<!-- ── Main Layout ────────────────────────────────────────────────────── -->
+<div class="rota-layout">
+
+  <!-- Calendar Column -->
+  <div class="calendar-area">
+    <div class="stats-bar" id="stats-bar">
+      <div class="stat-pill"><i class="fa fa-calendar-week"></i> <span id="stat-month">Loading…</span></div>
+      <div class="stat-pill" style="margin-left:auto;"><span id="stat-total">0</span> shifts this month</div>
+    </div>
+    <div class="calendar-wrap" style="position:relative;" id="calendar-wrap">
+      <div id="calendar"></div>
+    </div>
+  </div>
+
+  <!-- Staff Sidebar -->
+  <aside class="staff-sidebar">
+    <div class="sidebar-header">
+      <h3><i class="fa fa-users" style="margin-right:6px;color:var(--accent);"></i>Staff</h3>
+      <button class="btn btn-ghost btn-sm" id="btn-refresh-staff" title="Refresh">
+        <i class="fa fa-rotate-right"></i>
+      </button>
+    </div>
+    <div class="sidebar-search">
+      <div class="search-icon-wrap">
+        <i class="fa fa-search"></i>
+        <input type="text" id="staff-search" placeholder="Search staff…"/>
+      </div>
+    </div>
+    <div class="staff-list" id="staff-list">
+      <div class="empty-staff"><i class="fa fa-spinner fa-spin"></i>Loading staff…</div>
+    </div>
+    <div class="sidebar-footer">
+      <p style="font-size:11px;color:var(--muted);text-align:center;line-height:1.5;">
+        <i class="fa fa-hand-pointer" style="margin-right:4px;"></i>
+        Drag a staff card onto a date to schedule a shift
+      </p>
+    </div>
+  </aside>
+</div>
+
+<!-- ── Ghost Drag Element ────────────────────────────────────────────── -->
+<div id="drag-ghost"></div>
+
+<!-- ── Shift Modal ────────────────────────────────────────────────────── -->
+<div class="modal-backdrop" id="shift-modal">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fa fa-calendar-plus"></i> <span id="modal-title-text">Schedule Shift</span></div>
+      <button class="modal-close" id="modal-close"><i class="fa fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <!-- Shown when date comes from drag-drop — replaces the date input -->
+      <div class="drop-date-display" id="modal-date-display" style="display:none;">
+        <i class="fa fa-calendar-day"></i>
+        <span id="modal-date-label">–</span>
+      </div>
+      <form id="shift-form">
+        <input type="hidden" id="shift-id"/>
+        <div class="form-group">
+          <label class="form-label">Employee</label>
+          <select class="form-control" id="shift-employee" required></select>
+        </div>
+        <!-- Date field: hidden when dropped (date already known), visible for manual add/edit -->
+        <div class="form-group" id="date-field-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-control" id="shift-date" required/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Start Time</label>
+            <input type="time" class="form-control" id="shift-start" required value="09:00"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Time</label>
+            <input type="time" class="form-control" id="shift-end" required value="17:00"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes (optional)</label>
+          <input type="text" class="form-control" id="shift-notes" placeholder="e.g. Cover for holiday…"/>
+        </div>
+        <!-- Hours worked summary — updates dynamically when times change -->
+        <div class="hours-summary" id="hours-summary" style="display:none;">
+          <div class="hours-item">
+            <span class="hours-label">Worked</span>
+            <span class="hours-value" id="hours-worked">–</span>
+          </div>
+          <span class="hours-sep">›</span>
+          <div class="hours-item">
+            <span class="hours-label">Break</span>
+            <span class="hours-value" id="hours-break">–</span>
+          </div>
+          <span class="hours-sep">›</span>
+          <div class="hours-item">
+            <span class="hours-label">Paid</span>
+            <span class="hours-value paid" id="hours-paid">–</span>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" id="btn-delete-shift" style="display:none;margin-right:auto;">
+        <i class="fa fa-trash"></i> Delete
+      </button>
+      <button class="btn btn-ghost" id="btn-modal-cancel">Cancel</button>
+      <button class="btn btn-primary" id="btn-save-shift">
+        <i class="fa fa-check"></i> Save Shift
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Export Date-Range Modal ────────────────────────────────────────── -->
+<div class="modal-backdrop" id="export-modal">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fa fa-file-excel"></i> Export Payroll</div>
+      <button class="modal-close" id="export-modal-close"><i class="fa fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="margin:0 0 16px;color:var(--muted);font-size:13px;">Choose the date range to include in the export.</p>
+      <div style="display:flex;gap:12px;">
+        <div class="form-group" style="flex:1;margin:0;">
+          <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px;">From</label>
+          <input type="date" class="form-control" id="export-start"/>
+        </div>
+        <div class="form-group" style="flex:1;margin:0;">
+          <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px;">To</label>
+          <input type="date" class="form-control" id="export-end"/>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="export-modal-cancel">Cancel</button>
+      <button class="btn btn-primary" id="export-modal-confirm">
+        <i class="fa fa-download"></i> Download
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast Container ───────────────────────────────────────────────── -->
+<div id="toast-container"></div>
+
+<!-- JS Dependencies -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+<script src="static/js/main.js" defer></script>
+</body>
+</html>

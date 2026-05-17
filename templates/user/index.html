@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard – Staff Rota</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body class="index-page">
+<header class="header">
+  <div class="logo">
+    <span><i class="fa fa-calendar-check" style="font-size:13px;color:white;"></i></span>
+    Staff Rota
+  </div>
+  <nav class="nav">
+    <a href="/" class="active">Dashboard</a>
+    <a href="/rota">Scheduler</a>
+    <a href="/admin/">Manage Staff</a>
+  </nav>
+</header>
+
+<div class="main">
+  <div class="hero">
+    <h1>Good <span id="greeting-time">day</span> 👋</h1>
+    <p>Here's an overview of your staff rota.</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(99,102,241,.15)"><i class="fa fa-users" style="color:var(--accent)"></i></div>
+      <div class="stat-value" id="stat-employees">–</div>
+      <div class="stat-label">Total Staff</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(16,185,129,.15)"><i class="fa fa-calendar-day" style="color:var(--success)"></i></div>
+      <div class="stat-value" id="stat-today">–</div>
+      <div class="stat-label">Shifts Today</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(245,158,11,.15)"><i class="fa fa-calendar-week" style="color:var(--warn)"></i></div>
+      <div class="stat-value" id="stat-week">–</div>
+      <div class="stat-label">Shifts This Week</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(239,68,68,.15)"><i class="fa fa-calendar" style="color:var(--danger)"></i></div>
+      <div class="stat-value" id="stat-month">–</div>
+      <div class="stat-label">Shifts This Month</div>
+    </div>
+  </div>
+
+  <div class="quick-links">
+    <a href="/rota" class="quick-link">
+      <h3><i class="fa fa-calendar-plus link-icon"></i> Open Scheduler</h3>
+      <p>Drag and drop staff onto the calendar to create shifts. View by month, week, or list.</p>
+    </a>
+    <a href="/admin/" class="quick-link">
+      <h3><i class="fa fa-users-gear link-icon"></i> Manage Staff</h3>
+      <p>Add, edit, or remove staff members. Assign roles and colours for easy identification.</p>
+    </a>
+  </div>
+
+  <div class="today-shifts">
+    <div class="section-header"><i class="fa fa-sun" style="color:var(--warn)"></i> Today's Shifts</div>
+    <div id="today-list"><div class="empty-msg"><i class="fa fa-spinner fa-spin"></i></div></div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="static/js/main.js"></script>
+</body>
+</html>
